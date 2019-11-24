@@ -23,8 +23,8 @@ com\testing\api\resource\PersonApi.class
 com\testing\logging\aspect\LoggingAspect.class
 com\testing\services\impl\IOrderServiceImpl.class
 metrics\service\CounterServiceLegacyWrapperImpl.class
-com\testing\api\controller\PersonController.class
 com\testing\dto\PersonDto.class
+com\testing\api\integration\WarehouseClient$1.class
 com\testing\api\mapping\PersonApiPersonDtoMapper.class
 com\testing\services\IProductService.class
 com\testing\api\resource\ProductApi.class

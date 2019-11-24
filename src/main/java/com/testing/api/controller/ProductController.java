@@ -1,5 +1,6 @@
 package com.testing.api.controller;
 
+import com.testing.api.integration.WarehouseClient;
 import com.testing.api.mapping.ProductApiProductMapper;
 import com.testing.api.mapping.ProductApiProductMapperImpl;
 import com.testing.api.resource.ProductApi;
@@ -15,29 +16,29 @@ import java.util.Optional;
 @CrossOrigin(origins = "http://localhost:4200")
 public class ProductController {
 
-    ProductApiProductMapperImpl productApiProductMapper = new ProductApiProductMapperImpl();
-    private final ProductRepository productRepository;
-
-    public ProductController(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
+    WarehouseClient warehouseClient = new WarehouseClient();
 
     @GetMapping("/products")
     public List<ProductApi> getProducts() {
-        List products = (List) productRepository.findAll();
-        return products;
+        List<ProductApi> a = warehouseClient.getProducts();
+        return warehouseClient.getProducts();
     }
 
     @PostMapping("/products")
     void addProduct(@RequestBody ProductApi product) {
-
-        productRepository.save(productApiProductMapper.productApiToProductDto(product));
+        warehouseClient.addProduct(product);
     }
 
-    @RequestMapping(value = "/productinformation/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/product/{id}", method = RequestMethod.GET)
     public ProductApi getProductInformation(@PathVariable("id") long id) {
-        Optional<ProductApi> product = Optional.ofNullable(productApiProductMapper.productDtoToProductApi(productRepository.findById(id)));
-        return product.get();
+        ProductApi a = warehouseClient.getProduct(id);
+        return a;
+    }
+
+    @RequestMapping(value = "/buyProduct/{id}", method = RequestMethod.GET)
+    public ProductApi buyProduct(@PathVariable("id") long id) {
+        ProductApi a = warehouseClient.buyProduct(id);
+        return a;
     }
 
 }

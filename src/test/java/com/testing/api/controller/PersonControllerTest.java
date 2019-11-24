@@ -30,8 +30,8 @@ public class PersonControllerTest {
     @Autowired
     private TestRestTemplate testRestTemplate;
 
-    @MockBean
-    private PersonController personController;
+   // @MockBean
+    //private PersonController personController;
 
     @Test
     public void personGet() throws Exception {
