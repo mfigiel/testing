@@ -1,5 +1,6 @@
 metrics\service\MappingMetrics.class
 com\testing\api\integration\WarehouseClient.class
+com\testing\api\integration\ClientServiceClient$1.class
 com\testing\repository\AddressRepository.class
 com\testing\services\impl\ICustomerServiceImpl.class
 com\testing\logging\LoggableResource.class
@@ -15,6 +16,7 @@ com\testing\TestingApplication.class
 com\testing\services\ICustomerService.class
 com\testing\configuration\SwaggerConfig.class
 com\testing\repository\entity\Product.class
+com\testing\api\integration\ClientServiceClient.class
 com\testing\api\controller\ProductController.class
 com\testing\services\impl\IProductServiceImpl.class
 com\testing\api\validation\AddressValidation.class
