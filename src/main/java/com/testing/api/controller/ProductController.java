@@ -1,26 +1,28 @@
 package com.testing.api.controller;
 
 import com.testing.api.integration.WarehouseClient;
-import com.testing.api.mapping.ProductApiProductMapper;
-import com.testing.api.mapping.ProductApiProductMapperImpl;
 import com.testing.api.resource.ProductApi;
-import com.testing.repository.ProductRepository;
+import com.testing.metrics.Metrics;
+import com.testing.service.metrics.CounterService;
+import io.micrometer.core.instrument.Tags;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping
 @CrossOrigin(origins = "http://localhost:4200")
 public class ProductController {
 
+    @Autowired
+    CounterService counterService;
+
     WarehouseClient warehouseClient = new WarehouseClient();
 
     @GetMapping("/products")
     public List<ProductApi> getProducts() {
-        List<ProductApi> a = warehouseClient.getProducts();
+        counterService.increment(Metrics.GET_PRODUCTS);
         return warehouseClient.getProducts();
     }
 
@@ -31,14 +33,14 @@ public class ProductController {
 
     @RequestMapping(value = "/product/{id}", method = RequestMethod.GET)
     public ProductApi getProductInformation(@PathVariable("id") long id) {
-        ProductApi a = warehouseClient.getProduct(id);
-        return a;
+        counterService.increment(Metrics.PRODUCT_SOLD,
+                Tags.of(Metrics.Tags.ID, String.valueOf(id)));
+        return warehouseClient.getProduct(id);
     }
 
     @RequestMapping(value = "/buyProduct/{id}", method = RequestMethod.GET)
     public ProductApi buyProduct(@PathVariable("id") long id) {
-        ProductApi a = warehouseClient.buyProduct(id);
-        return a;
+        return warehouseClient.buyProduct(id);
     }
 
 }
