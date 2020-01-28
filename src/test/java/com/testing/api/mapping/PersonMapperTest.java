@@ -1,6 +1,6 @@
 package com.testing.api.mapping;
 
-import com.testing.api.resource.PersonAddressApi;
+import com.testing.api.resource.AddressApi;
 import com.testing.api.resource.PersonApi;
 import com.testing.dto.PersonDto;
 import org.junit.Before;
@@ -23,7 +23,7 @@ public class PersonMapperTest {
 
     PersonApi personApi = new PersonApi();
     PersonDto personDto = new PersonDto();
-    PersonAddressApi personAddressApi = new PersonAddressApi();
+    AddressApi addressApi = new AddressApi();
 
     @Before
     public void init() throws ParseException {
@@ -36,10 +36,10 @@ public class PersonMapperTest {
         personDto.setId(1L);
         personDto.setSurname("Surname");
 
-        personAddressApi.setCity("Gliwice");
-        personAddressApi.setHouseNumber(5);
-        personAddressApi.setStreet("Street");
-        personAddressApi.setZipCode("44-100");
+        addressApi.setCity("Gliwice");
+        addressApi.setHouseNumber(5);
+        addressApi.setStreet("Street");
+        addressApi.setZipCode("44-100");
     }
 
     @Test
@@ -99,7 +99,7 @@ public class PersonMapperTest {
 
     @Test
     public void testMapToDtoWithConstructorAndAdress() throws ParseException {
-        personApi.setAddress(personAddressApi);
+        personApi.setAddress(addressApi);
         PersonDto personDto = PersonMapper.mapToDto(personApi);
 
         //then

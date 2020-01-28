@@ -4,8 +4,6 @@ import com.testing.api.validation.AddressValidation;
 import com.testing.logging.Loggable;
 import lombok.*;
 
-import java.util.Date;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,7 +17,7 @@ public class PersonApi {
     @NonNull
     private String surname;
     @AddressValidation
-    private PersonAddressApi address;
+    private AddressApi address;
 
     @Override
     public String toString() {

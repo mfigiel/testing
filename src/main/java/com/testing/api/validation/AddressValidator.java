@@ -1,15 +1,15 @@
 package com.testing.api.validation;
 
-import com.testing.api.resource.PersonAddressApi;
+import com.testing.api.resource.AddressApi;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class AddressValidator implements ConstraintValidator<AddressValidation, PersonAddressApi> {
+public class AddressValidator implements ConstraintValidator<AddressValidation, AddressApi> {
 
     @Override
-    public boolean isValid(PersonAddressApi personAddressApi, ConstraintValidatorContext constraintValidatorContext) {
-        PersonAddressApi address = personAddressApi;
+    public boolean isValid(AddressApi addressApi, ConstraintValidatorContext constraintValidatorContext) {
+        AddressApi address = addressApi;
         return isNotNullAndNotEmpty(address.getCity()) && isNotNullAndNotEmpty(address.getStreet()) &&
                 isNotNullAndNotEmpty(address.getZipCode());
     }

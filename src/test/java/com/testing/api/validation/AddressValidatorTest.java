@@ -1,12 +1,11 @@
 package com.testing.api.validation;
 
-import com.testing.api.resource.PersonAddressApi;
+import com.testing.api.resource.AddressApi;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.validation.ConstraintValidatorContext;
 
@@ -33,13 +32,13 @@ class AddressValidatorTest {
     @Test
     void testOK_correctData() {
         // for
-        PersonAddressApi personAddressApi = new PersonAddressApi();
-        personAddressApi.setCity("City");
-        personAddressApi.setStreet("Street");
-        personAddressApi.setZipCode("44-100");
+        AddressApi addressApi = new AddressApi();
+        addressApi.setCity("City");
+        addressApi.setStreet("Street");
+        addressApi.setZipCode("44-100");
 
         // when
-        boolean result = validator.isValid(personAddressApi, constraintValidatorContext);
+        boolean result = validator.isValid(addressApi, constraintValidatorContext);
 
         // then
         assertThat(result,is(true));
@@ -48,12 +47,12 @@ class AddressValidatorTest {
     @Test
     void testFalse_cityNull() {
         // for
-        PersonAddressApi personAddressApi = new PersonAddressApi();
-        personAddressApi.setStreet("Street");
-        personAddressApi.setZipCode("44-100");
+        AddressApi addressApi = new AddressApi();
+        addressApi.setStreet("Street");
+        addressApi.setZipCode("44-100");
 
         // when
-        boolean result = validator.isValid(personAddressApi, constraintValidatorContext);
+        boolean result = validator.isValid(addressApi, constraintValidatorContext);
 
         // then
         assertThat(result,is(false));
@@ -62,13 +61,13 @@ class AddressValidatorTest {
     @Test
     void testFalse_allIsEmpty() {
         // for
-        PersonAddressApi personAddressApi = new PersonAddressApi();
-        personAddressApi.setCity("");
-        personAddressApi.setStreet("");
-        personAddressApi.setZipCode("");
+        AddressApi addressApi = new AddressApi();
+        addressApi.setCity("");
+        addressApi.setStreet("");
+        addressApi.setZipCode("");
 
         // when
-        boolean result = validator.isValid(personAddressApi, constraintValidatorContext);
+        boolean result = validator.isValid(addressApi, constraintValidatorContext);
 
         // then
         assertThat(result,is(false));
@@ -77,10 +76,10 @@ class AddressValidatorTest {
     @Test
     void testFalse_allIsNull() {
         // for
-        PersonAddressApi personAddressApi = new PersonAddressApi();
+        AddressApi addressApi = new AddressApi();
 
         // when
-        boolean result = validator.isValid(personAddressApi, constraintValidatorContext);
+        boolean result = validator.isValid(addressApi, constraintValidatorContext);
 
         // then
         assertThat(result,is(false));

@@ -9,7 +9,8 @@ import javax.validation.constraints.Size;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PersonAddressApi {
+@ToString
+public class AddressApi {
 
     @NotNull
     @Size(min=2, max=40)
@@ -22,14 +23,4 @@ public class PersonAddressApi {
     @NonNull
     private String zipCode;
 
-    @Override
-    public String toString() {
-        return "PersonAddressApi{" +
-                "city='" + city + '\'' +
-                ", street='" + street + '\'' +
-                ", houseNumber=" + houseNumber +
-                ", flatNumber=" + flatNumber +
-                ", zipCode='" + zipCode + '\'' +
-                '}';
-    }
 }

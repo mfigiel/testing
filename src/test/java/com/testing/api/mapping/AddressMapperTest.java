@@ -1,15 +1,12 @@
 package com.testing.api.mapping;
 
-import com.testing.api.resource.PersonAddressApi;
+import com.testing.api.resource.AddressApi;
 import com.testing.dto.PersonAddressDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -24,16 +21,16 @@ import static org.junit.Assert.fail;
 @RunWith(MockitoJUnitRunner.class)
 public class AddressMapperTest {
 
-    PersonAddressApi personAddressApi = new PersonAddressApi();
+    AddressApi addressApi = new AddressApi();
     PersonAddressDto personAddressDto = new PersonAddressDto();
 
     @Before
     public void init() {
-        personAddressApi.setCity("Gliwice");
-        personAddressApi.setHouseNumber(5);
-        personAddressApi.setStreet("Street");
-        personAddressApi.setZipCode("44-100");
-        personAddressApi.setFlatNumber(4);
+        addressApi.setCity("Gliwice");
+        addressApi.setHouseNumber(5);
+        addressApi.setStreet("Street");
+        addressApi.setZipCode("44-100");
+        addressApi.setFlatNumber(4);
 
         personAddressDto.setCity("Gliwice");
         personAddressDto.setHouseNumber(5);
@@ -51,7 +48,7 @@ public class AddressMapperTest {
 
     @Test
     public void mapAddressToDto(){
-        PersonAddressDto personAddressDto = AddressMapper.mapAddressToDto(personAddressApi);
+        PersonAddressDto personAddressDto = AddressMapper.mapAddressToDto(addressApi);
 
         //then
         assertThat("Invalid mapper result", personAddressDto, is(notNullValue()));
@@ -68,16 +65,16 @@ public class AddressMapperTest {
 
     @Test
     public void mapAdressToApi() {
-        PersonAddressApi personAddressApi = AddressMapper.mapAddressDtoToApi(personAddressDto);
+        AddressApi addressApi = AddressMapper.mapAddressDtoToApi(personAddressDto);
 
         //then
-        assertThat("Invalid mapper result", personAddressApi, is(notNullValue()));
-        assertThat("Invalid mapper result", personAddressApi.getCity(), is("Gliwice"));
-        assertThat("Invalid mapper result", personAddressApi.getHouseNumber(), is(5));
-        assertThat("Invalid mapper result", personAddressApi.getStreet(), is("Street"));
-        assertThat("Invalid mapper result", personAddressApi.getZipCode(), is("44-100"));
-        assertThat("Invalid mapper result", personAddressApi.getHouseNumber(), is(5));
-        assertThat("Invalid mapper result", personAddressApi.toString(),
-                is("PersonAddressApi{city='Gliwice', street='Street', houseNumber=5, flatNumber=4, zipCode='44-100'}"));
+        assertThat("Invalid mapper result", addressApi, is(notNullValue()));
+        assertThat("Invalid mapper result", addressApi.getCity(), is("Gliwice"));
+        assertThat("Invalid mapper result", addressApi.getHouseNumber(), is(5));
+        assertThat("Invalid mapper result", addressApi.getStreet(), is("Street"));
+        assertThat("Invalid mapper result", addressApi.getZipCode(), is("44-100"));
+        assertThat("Invalid mapper result", addressApi.getHouseNumber(), is(5));
+        assertThat("Invalid mapper result", addressApi.toString(),
+                is("AddressApi{city='Gliwice', street='Street', houseNumber=5, flatNumber=4, zipCode='44-100'}"));
     }
 }

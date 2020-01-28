@@ -1,5 +1,6 @@
 package com.testing.api.integration;
 
+import com.testing.api.resource.ClientApi;
 import com.testing.api.resource.ProductApi;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -11,22 +12,22 @@ import java.util.List;
 
 public class ClientServiceClient {
 
-    public static final String WAREHOUSE_CLIENT_ADDRESS = "http://localhost:8082";
+    public static final String WAREHOUSE_CLIENT_ADDRESS = "http://localhost:8083";
     WebClient client = WebClient.create(WAREHOUSE_CLIENT_ADDRESS);
 
-    public ProductApi getProduct(Long id){
-        return new RestTemplate().getForObject(WAREHOUSE_CLIENT_ADDRESS + "/client/" + id, ProductApi.class);
+    public ClientApi getClient(Long id){
+        return new RestTemplate().getForObject(WAREHOUSE_CLIENT_ADDRESS + "/client/" + id, ClientApi.class);
     }
 
-    public List<ProductApi> getProducts(){
+    public List<ClientApi> getClients(){
         return new RestTemplate().exchange(WAREHOUSE_CLIENT_ADDRESS + "/clients",
-                        HttpMethod.GET, null, new ParameterizedTypeReference<List<ProductApi>>() {
+                        HttpMethod.GET, null, new ParameterizedTypeReference<List<ClientApi>>() {
                         }).getBody();
     }
 
-    public ProductApi addProduct(ProductApi newProduct){
+    public ClientApi addClient(ClientApi newClient){
         return new RestTemplate().postForObject(WAREHOUSE_CLIENT_ADDRESS + "/clients"
-                , new HttpEntity<>(newProduct), ProductApi.class);
+                , new HttpEntity<>(newClient), ClientApi.class);
     }
 
 }
