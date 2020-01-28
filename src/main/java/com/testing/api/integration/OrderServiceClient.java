@@ -5,11 +5,13 @@ import com.testing.api.resource.OrderApi;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
+@Component
 public class OrderServiceClient {
 
     public static final String WAREHOUSE_ORDER_ADDRESS = "http://localhost:8082";

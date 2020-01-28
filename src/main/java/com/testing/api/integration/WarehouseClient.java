@@ -4,10 +4,12 @@ import com.testing.api.resource.ProductApi;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
+@Component
 public class WarehouseClient {
 
     public static final String WAREHOUSE_ADRESS = "http://localhost:8081";

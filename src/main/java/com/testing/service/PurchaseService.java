@@ -5,16 +5,20 @@ import com.testing.api.integration.OrderServiceClient;
 import com.testing.api.integration.WarehouseClient;
 import com.testing.api.resource.ProductApi;
 import com.testing.api.resource.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ShopTransaction {
+public class PurchaseService {
 
-    WarehouseClient warehouseClient = new WarehouseClient();
+    @Autowired
+    WarehouseClient warehouseClient;
 
-    OrderServiceClient orderClient = new OrderServiceClient();
+    @Autowired
+    OrderServiceClient orderClient;
 
-    ClientServiceClient clientService = new ClientServiceClient();
+    @Autowired
+    ClientServiceClient clientService;
 
     public void finishShopTransaction(Transaction transaction) {
         for (ProductApi productApi : transaction.getOrder().getProducts()) {

@@ -1,19 +1,16 @@
 package com.testing.api.controller;
 
-import com.testing.api.integration.ClientServiceClient;
-import com.testing.api.integration.OrderServiceClient;
 import com.testing.api.integration.WarehouseClient;
-import com.testing.api.resource.ClientApi;
-import com.testing.api.resource.OrderApi;
 import com.testing.api.resource.ProductApi;
 import com.testing.api.resource.Transaction;
 import com.testing.metrics.Metrics;
-import com.testing.service.ShopTransaction;
+import com.testing.service.PurchaseService;
 import com.testing.service.metrics.CounterService;
 import io.micrometer.core.instrument.Tags;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -25,9 +22,10 @@ public class ProductController {
     CounterService counterService;
 
     @Autowired
-    ShopTransaction shopTransaction;
+    PurchaseService purchaseService;
 
-    WarehouseClient warehouseClient = new WarehouseClient();
+    @Autowired
+    WarehouseClient warehouseClient;
 
     @GetMapping("/products")
     public List<ProductApi> getProducts() {
@@ -48,8 +46,8 @@ public class ProductController {
     }
 
     @RequestMapping(value = "/buyProduct", method = RequestMethod.POST)
-    public ProductApi buyProduct(@PathVariable("transaction") Transaction transaction) {
-        shopTransaction.finishShopTransaction(transaction);
+    public ProductApi buyProduct(@Valid @RequestBody Transaction transaction) {
+        purchaseService.finishShopTransaction(transaction);
         return new ProductApi();
     }
 
