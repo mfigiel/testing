@@ -1,5 +1,6 @@
 package com.testing.api.resource;
 
+import com.testing.api.validation.AddressValidation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ public class ClientApi {
 
     private String Surname;
 
+    @AddressValidation
     private AddressApi address;
 
 }
