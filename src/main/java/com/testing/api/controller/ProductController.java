@@ -1,12 +1,8 @@
 package com.testing.api.controller;
 
-import com.testing.api.integration.WarehouseClient;
 import com.testing.api.resource.ProductApi;
 import com.testing.api.resource.Transaction;
-import com.testing.metrics.Metrics;
-import com.testing.service.PurchaseService;
-import com.testing.service.metrics.CounterService;
-import io.micrometer.core.instrument.Tags;
+import com.testing.service.WarehouseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,35 +15,26 @@ import java.util.List;
 public class ProductController {
 
     @Autowired
-    CounterService counterService;
-
-    @Autowired
-    PurchaseService purchaseService;
-
-    @Autowired
-    WarehouseClient warehouseClient;
+    WarehouseService warehouseService;
 
     @GetMapping("/products")
     public List<ProductApi> getProducts() {
-        counterService.increment(Metrics.GET_PRODUCTS);
-        return warehouseClient.getProducts();
+        return warehouseService.getProducts();
     }
 
     @PostMapping("/products")
-    void addProduct(@RequestBody ProductApi product) {
-        warehouseClient.addProduct(product);
+    public void addProduct(@RequestBody ProductApi product) {
+        warehouseService.addProduct(product);
     }
 
     @RequestMapping(value = "/product/{id}", method = RequestMethod.GET)
     public ProductApi getProductInformation(@PathVariable("id") long id) {
-        counterService.increment(Metrics.PRODUCT_SOLD,
-                Tags.of(Metrics.Tags.ID, String.valueOf(id)));
-        return warehouseClient.getProduct(id);
+        return warehouseService.getProduct(id);
     }
 
     @RequestMapping(value = "/buyProduct", method = RequestMethod.POST)
     public ProductApi buyProduct(@Valid @RequestBody Transaction transaction) {
-        purchaseService.finishShopTransaction(transaction);
+        warehouseService.finishShopTransaction(transaction);
         return new ProductApi();
     }
 
