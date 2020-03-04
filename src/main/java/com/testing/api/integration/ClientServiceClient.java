@@ -18,7 +18,7 @@ public class ClientServiceClient {
     WebClient client = WebClient.create(WAREHOUSE_CLIENT_ADDRESS);
 
     public ClientApi getClient(Long id){
-        return new RestTemplate().getForObject(WAREHOUSE_CLIENT_ADDRESS + "/client/" + id, ClientApi.class);
+            return new RestTemplate().getForObject(WAREHOUSE_CLIENT_ADDRESS + "/client/" + id, ClientApi.class);
     }
 
     public List<ClientApi> getClients(){
