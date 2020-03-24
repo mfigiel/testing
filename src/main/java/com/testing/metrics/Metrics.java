@@ -3,10 +3,12 @@ package com.testing.metrics;
 public class Metrics {
     public static final String PRODUCT_SOLD = "product.sold";
     public static final String GET_PRODUCTS = "products.get";
-    public static final String ADD_PRODUCT =  "products.get";;
+    public static final String ADD_PRODUCT =  "products.get";
+    public static final String TRANSACTION_BROKEN = "transaction.broken";
 
     public static class Tags {
         public static final String ID = "id";
+        public static final String ORDER_ID = "order_id";
 
         private Tags() {
             //default constructor

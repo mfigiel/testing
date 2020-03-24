@@ -6,9 +6,9 @@ import com.testing.api.integration.WarehouseClient;
 import com.testing.api.resource.ProductApi;
 import com.testing.api.resource.Transaction;
 import com.testing.metrics.Metrics;
-import com.testing.repository.entity.Product;
 import com.testing.service.metrics.CounterService;
 import io.micrometer.core.instrument.Tags;
+import org.apache.commons.lang.SerializationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,13 +30,26 @@ public class WarehouseService {
     CounterService counterService;
 
     public Transaction finishShopTransaction(Transaction transaction) {
+        Transaction copiedTransaction = (Transaction) SerializationUtils.clone(transaction);
         for (ProductApi productApi : transaction.getOrder().getProducts()) {
             productApi = warehouseClient.buyProduct(productApi.getId());
         }
-        orderClient.addOrder(transaction.getOrder());
-        clientService.addClient(transaction.getClient());
+        transaction.setOrder(orderClient.addOrder(transaction.getOrder()));
+        transaction.setClient(clientService.addClient(transaction.getClient()));
         transaction.setFinished(true);
-        return transaction;
+        return verifyTransaction(transaction) == true ? transaction : copiedTransaction;
+    }
+
+    private boolean verifyTransaction(Transaction transaction) {
+        if (transaction.getClient() == null && transaction.getOrder() == null
+                && transaction.getOrder().getProducts() != null &&
+                transaction.getOrder().getProducts().stream().noneMatch(productApi -> productApi == null)) {
+            return true;
+        }
+        counterService.increment(Metrics.TRANSACTION_BROKEN,
+                Tags.of(Metrics.Tags.ORDER_ID, String.valueOf(transaction.getOrder().getId())));
+
+        return false;
     }
 
     public ProductApi getProduct(long id) {
