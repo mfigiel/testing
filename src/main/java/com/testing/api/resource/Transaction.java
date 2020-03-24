@@ -16,4 +16,5 @@ public class Transaction {
     OrderApi order;
     @ClientValidation
     ClientApi client;
+    boolean finished;
 }

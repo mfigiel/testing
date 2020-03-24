@@ -33,9 +33,8 @@ public class ProductController {
     }
 
     @RequestMapping(value = "/buyProduct", method = RequestMethod.POST)
-    public ProductApi buyProduct(@Valid @RequestBody Transaction transaction) {
-        warehouseService.finishShopTransaction(transaction);
-        return new ProductApi();
+    public Transaction buyProduct(@Valid @RequestBody Transaction transaction) {
+       return warehouseService.finishShopTransaction(transaction);
     }
 
 }

@@ -6,6 +6,7 @@ import com.testing.api.integration.WarehouseClient;
 import com.testing.api.resource.ProductApi;
 import com.testing.api.resource.Transaction;
 import com.testing.metrics.Metrics;
+import com.testing.repository.entity.Product;
 import com.testing.service.metrics.CounterService;
 import io.micrometer.core.instrument.Tags;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +29,14 @@ public class WarehouseService {
     @Autowired
     CounterService counterService;
 
-    public void finishShopTransaction(Transaction transaction) {
+    public Transaction finishShopTransaction(Transaction transaction) {
         for (ProductApi productApi : transaction.getOrder().getProducts()) {
-            warehouseClient.buyProduct(productApi.getId());
+            productApi = warehouseClient.buyProduct(productApi.getId());
         }
         orderClient.addOrder(transaction.getOrder());
         clientService.addClient(transaction.getClient());
+        transaction.setFinished(true);
+        return transaction;
     }
 
     public ProductApi getProduct(long id) {
