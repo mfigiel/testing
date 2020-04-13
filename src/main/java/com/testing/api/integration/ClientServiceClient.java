@@ -1,21 +1,18 @@
 package com.testing.api.integration;
 
 import com.testing.api.resource.ClientApi;
-import com.testing.api.resource.ProductApi;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
 @Component
 public class ClientServiceClient {
 
-    public static final String WAREHOUSE_CLIENT_ADDRESS = "http://localhost:8083";
-    WebClient client = WebClient.create(WAREHOUSE_CLIENT_ADDRESS);
+    private static final String WAREHOUSE_CLIENT_ADDRESS = "http://localhost:8083";
 
     public ClientApi getClient(Long id){
             return new RestTemplate().getForObject(WAREHOUSE_CLIENT_ADDRESS + "/client/" + id, ClientApi.class);

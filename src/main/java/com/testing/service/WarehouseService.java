@@ -2,39 +2,28 @@ package com.testing.service;
 
 import com.google.gson.Gson;
 import com.testing.api.integration.ClientServiceClient;
-import com.testing.api.integration.Order.OrderDto;
 import com.testing.api.integration.Order.OrderServiceClient;
 import com.testing.api.integration.WarehouseClient;
-import com.testing.api.mapping.OrderApiOrderMapperImpl;
 import com.testing.api.resource.ProductApi;
 import com.testing.api.resource.ProductState;
 import com.testing.api.resource.Transaction;
 import com.testing.metrics.Metrics;
 import com.testing.service.metrics.CounterService;
 import io.micrometer.core.instrument.Tags;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.server.ResponseStatusException;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class WarehouseService {
 
-    @Autowired
-    WarehouseClient warehouseClient;
-
-    @Autowired
-    OrderServiceClient orderClient;
-
-    @Autowired
-    ClientServiceClient clientService;
-
-    @Autowired
-    CounterService counterService;
+    private final WarehouseClient warehouseClient;
+    private final OrderServiceClient orderClient;
+    private final ClientServiceClient clientService;
+    private final CounterService counterService;
 
     public Transaction finishShopTransaction(Transaction transaction) {
         Gson gson = new Gson();

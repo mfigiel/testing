@@ -1,16 +1,25 @@
 package com.testing.service.metrics;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
+import io.micrometer.core.instrument.Tags;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Service;
 
-/**
- *
- *
- * Created by abudzinski on 8/29/2018.
- */
-public interface CounterService {
+@Primary
+@Service
+@RequiredArgsConstructor
+public class CounterService {
 
-    void increment(String name);
+    private final MeterRegistry meterRegistry;
 
-    void increment(String metricName, Iterable<Tag> tags);
+    public void increment(String name) {
+        meterRegistry.counter(name, Tags.empty()).increment();
+    }
+
+    public void increment(String metricName, Iterable<Tag> tags) {
+        meterRegistry.counter(metricName, tags).increment();
+    }
 
 }
