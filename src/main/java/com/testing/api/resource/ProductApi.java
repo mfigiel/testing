@@ -1,6 +1,5 @@
 package com.testing.api.resource;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,8 +10,7 @@ import java.math.BigDecimal;
 @Setter
 public class ProductApi {
 
-    @NotNull
-    private long id;
+    private Long id;
     @NotNull
     private String name;
     @NotNull
@@ -21,4 +19,5 @@ public class ProductApi {
     private String category;
     private Long unitsInStock;
     private Long unitsInOrder;
+    private ProductState state = ProductState.NONE;
 }

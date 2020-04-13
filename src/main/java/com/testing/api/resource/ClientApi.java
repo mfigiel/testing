@@ -12,10 +12,9 @@ import lombok.Setter;
 @Setter
 public class ClientApi {
 
+    private Long id;
     private String name;
-
     private String Surname;
-
     @AddressValidation
     private AddressApi address;
 

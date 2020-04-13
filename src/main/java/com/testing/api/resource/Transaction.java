@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Transaction implements Serializable {
+public class Transaction {
     @OrderValidation
     OrderApi order;
     @ClientValidation

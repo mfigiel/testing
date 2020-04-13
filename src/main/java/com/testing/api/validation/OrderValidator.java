@@ -10,8 +10,8 @@ public class OrderValidator implements ConstraintValidator<OrderValidation, Orde
 
     @Override
     public boolean isValid(OrderApi order, ConstraintValidatorContext constraintValidatorContext) {
-        return order != null && order.getClientId() != null && order.getProducts() != null
-                && !order.getProducts().isEmpty() && order.getOrderDate() != null;
+        return order != null && order.getProducts() != null
+                && !order.getProducts().isEmpty();
     }
 
     private boolean isNotNullAndNotEmpty(String field) {

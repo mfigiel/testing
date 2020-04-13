@@ -1,6 +1,6 @@
-package com.testing.api.integration;
+package com.testing.api.integration.Order;
 
-
+import com.testing.api.mapping.OrderApiOrderMapperImpl;
 import com.testing.api.resource.OrderApi;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -27,9 +27,18 @@ public class OrderServiceClient {
                         }).getBody();
     }
 
-    public OrderApi addOrder(OrderApi newOrder){
+    public Long addOrder(OrderApi newOrder){
         return new RestTemplate().postForObject(WAREHOUSE_ORDER_ADDRESS + "/orders"
-                , new HttpEntity<>(newOrder), OrderApi.class);
+                , new HttpEntity<>(prepareOrderRequest(newOrder)), OrderDto.class).getId();
+
+    }
+
+    private OrderDto prepareOrderRequest(OrderApi order) {
+        OrderDto orderDto = new OrderApiOrderMapperImpl().orderApiToOrderDto(order);
+        order.getProducts()
+                .stream()
+                .forEach(e -> orderDto.getProducts().add(e.getId().toString()));
+        return orderDto;
     }
 
 }

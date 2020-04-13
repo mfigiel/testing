@@ -12,7 +12,7 @@ import java.util.List;
 @Component
 public class WarehouseClient {
 
-    public static final String WAREHOUSE_ADRESS = "http://localhost:8081";
+    public static final String WAREHOUSE_ADRESS = "http://localhost:8089";
     public static final String ALL_PRODUCTS_ENDPOINT = "/products";
     public static final String SINGLE_PRODUCT_ENDPOINT = "/product/";
     public static final String BUY_PRODUCT_ENDPOINT = "/buyProduct/";

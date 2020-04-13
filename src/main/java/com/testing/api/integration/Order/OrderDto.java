@@ -1,10 +1,11 @@
-package com.testing.api.resource;
+package com.testing.api.integration.Order;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -12,13 +13,9 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderApi {
-
+public class OrderDto {
     private Long id;
-
-    private List<ProductApi> products;
-
-    private Long clientId;
-
-    private Date orderDate = new Date();
+    private List<String> products = new ArrayList<>();
+    private Integer clientId;
+    private Date orderDate;
 }

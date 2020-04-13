@@ -1,17 +1,24 @@
 package com.testing.service;
 
+import com.google.gson.Gson;
 import com.testing.api.integration.ClientServiceClient;
-import com.testing.api.integration.OrderServiceClient;
+import com.testing.api.integration.Order.OrderDto;
+import com.testing.api.integration.Order.OrderServiceClient;
 import com.testing.api.integration.WarehouseClient;
+import com.testing.api.mapping.OrderApiOrderMapperImpl;
 import com.testing.api.resource.ProductApi;
+import com.testing.api.resource.ProductState;
 import com.testing.api.resource.Transaction;
 import com.testing.metrics.Metrics;
 import com.testing.service.metrics.CounterService;
 import io.micrometer.core.instrument.Tags;
-import org.apache.commons.lang.SerializationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.server.ResponseStatusException;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
@@ -30,19 +37,38 @@ public class WarehouseService {
     CounterService counterService;
 
     public Transaction finishShopTransaction(Transaction transaction) {
-        Transaction copiedTransaction = (Transaction) SerializationUtils.clone(transaction);
-        for (ProductApi productApi : transaction.getOrder().getProducts()) {
-            productApi = warehouseClient.buyProduct(productApi.getId());
+        Gson gson = new Gson();
+        Transaction copiedTransaction = gson.fromJson(gson.toJson(transaction), Transaction.class);
+        if (buyProducts(transaction)) {
+            transaction.setClient(clientService.addClient(transaction.getClient()));
+            transaction.getOrder().setClientId(transaction.getClient().getId());
+            transaction.getOrder().setId(orderClient.addOrder(transaction.getOrder()));
+            transaction.setFinished(true);
+            return verifyTransaction(transaction) == true ? transaction : copiedTransaction;
         }
-        transaction.setOrder(orderClient.addOrder(transaction.getOrder()));
-        transaction.setClient(clientService.addClient(transaction.getClient()));
-        transaction.setFinished(true);
-        return verifyTransaction(transaction) == true ? transaction : copiedTransaction;
+        return transaction;
+    }
+
+    private boolean buyProducts(Transaction transaction) {
+        boolean transactionCorrect = true;
+        for (ProductApi productApi : transaction.getOrder().getProducts()) {
+            try {
+                productApi = warehouseClient.buyProduct(productApi.getId());
+            } catch (HttpClientErrorException.Conflict e) {
+                productApi.setState(ProductState.BOUGHT);
+                transactionCorrect = false;
+            } catch (HttpClientErrorException.NotFound e) {
+                productApi.setState(ProductState.NOT_FOOUND);
+                transactionCorrect = false;
+            }
+        }
+        return transactionCorrect;
     }
 
     private boolean verifyTransaction(Transaction transaction) {
-        if (transaction.getClient() == null && transaction.getOrder() == null
+        if (transaction.getClient() != null && transaction.getOrder() != null
                 && transaction.getOrder().getProducts() != null &&
+                transaction.getClient().getId() != null &&
                 transaction.getOrder().getProducts().stream().noneMatch(productApi -> productApi == null)) {
             return true;
         }
