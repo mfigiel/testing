@@ -1,13 +1,11 @@
 package com.testing.api.resource;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
-@Getter
-@Setter
+@Data
 public class ProductApi {
 
     private Long id;
@@ -15,7 +13,9 @@ public class ProductApi {
     private String name;
     @NotNull
     private BigDecimal unitPrice;
+    @NotNull
     private String description;
+    @NotNull
     private String category;
     private Long unitsInStock;
     private Long unitsInOrder;

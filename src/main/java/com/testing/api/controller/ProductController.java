@@ -4,7 +4,6 @@ import com.testing.api.resource.ProductApi;
 import com.testing.api.resource.Transaction;
 import com.testing.service.WarehouseService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;

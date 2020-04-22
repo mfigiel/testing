@@ -2,18 +2,20 @@ package com.testing.api.resource;
 
 import com.testing.api.validation.AddressValidation;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+
+import javax.validation.constraints.NotEmpty;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 public class ClientApi {
 
     private Long id;
+    @NotEmpty
     private String name;
+    @NotEmpty
     private String Surname;
     @AddressValidation
     private AddressApi address;
