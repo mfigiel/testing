@@ -1,0 +1,29 @@
+server:
+  port: 9080
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          lower-case-service-id: true
+#          enabled: true
+#      routes:
+#      - id: rest_service_route
+#        uri: lb://rest_service
+#        predicates:
+#        - Path=/rest-service/**
+#        filters:
+#        - RewritePath=/rest-service/(?<path>.*), /$\{path}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+      lease:
+        duration: 5
+ribbon:
+  http:
+    client:
+      enabled: true

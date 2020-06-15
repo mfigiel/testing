@@ -1,7 +1,8 @@
 package com.testing.api.integration;
 
 import com.testing.api.resource.ProductApi;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -11,7 +12,6 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 
 @Component
-@AllArgsConstructor
 public class WarehouseClient {
 
     public static final String WAREHOUSE_ADRESS = "http://warehouse";
@@ -19,7 +19,9 @@ public class WarehouseClient {
     public static final String SINGLE_PRODUCT_ENDPOINT = "/product/";
     public static final String BUY_PRODUCT_ENDPOINT = "/buyProduct/";
 
-    private final RestTemplate restTemplate;
+    @LoadBalanced
+    @Autowired
+    private RestTemplate restTemplate;
 
     public ProductApi getProduct(Long id){
         return restTemplate.getForObject(WAREHOUSE_ADRESS + SINGLE_PRODUCT_ENDPOINT + id, ProductApi.class);

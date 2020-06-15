@@ -13,7 +13,7 @@ public class LoggingAspect {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoggingAspect.class);
 
-    @Around("(execution(* com.testing.api.controller..*(..)))")
+   // @Around("(execution(* com.testing.api.controller..*(..)))")
     public Object log(ProceedingJoinPoint jp) {
         Object result = null;
         final long start = System.currentTimeMillis();

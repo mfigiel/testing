@@ -10,7 +10,7 @@ public class securityConfig {
 
     @Bean
     @LoadBalanced
-    public RestTemplate restTemplate() {
+    public RestTemplate LoadBalancedRestTemplate() {
         return new RestTemplate();
     }
 }
