@@ -20,4 +20,11 @@ public class ProductApi {
     private Long unitsInStock;
     private Long unitsInOrder;
     private ProductState state = ProductState.NONE;
+
+    public ProductApi(ProductApi productApi) {
+
+    }
+
+    public ProductApi() {}
+
 }

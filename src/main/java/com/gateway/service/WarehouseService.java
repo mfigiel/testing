@@ -2,7 +2,9 @@ package com.gateway.service;
 
 import com.gateway.api.integration.ClientServiceClient;
 import com.gateway.api.integration.Order.OrderServiceClient;
-import com.gateway.api.integration.WarehouseClient;
+import com.gateway.api.integration.Warehouse.BuyProductsRequest;
+import com.gateway.api.integration.Warehouse.BuyProductsResponse;
+import com.gateway.api.integration.Warehouse.WarehouseClient;
 import com.gateway.api.resource.ProductApi;
 import com.gateway.api.resource.ProductState;
 import com.gateway.api.resource.Transaction;
@@ -13,7 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,13 +29,12 @@ public class WarehouseService {
     private final CounterService counterService;
 
     public Transaction finishShopTransaction(Transaction transaction) {
-        transaction = buyProducts(transaction);
+        transaction.getOrder().setProducts(buyProducts(transaction).getProducts());
         if (checkIfAllProductsWasBought(transaction)) {
             transaction.setClient(clientService.addClient(transaction.getClient()));
             transaction.getOrder().setClientId(transaction.getClient().getId());
             transaction.getOrder().setId(orderClient.addOrder(transaction.getOrder()));
             transaction.setFinished(true);
-            //return verifyTransaction(transaction) == true ? transaction : copiedTransaction;
         }
         return transaction;
     }
@@ -39,22 +42,14 @@ public class WarehouseService {
     private boolean checkIfAllProductsWasBought(Transaction transaction) {
         return transaction.getOrder().getProducts().stream().allMatch(product -> {
             product.toString();
-            return product.getState().equals(ProductState.NONE);
+            return product.getState().equals(ProductState.BOUGHT);
         });
     }
 
-    private Transaction buyProducts(Transaction transaction) {
-        for (ProductApi productApi : transaction.getOrder().getProducts()) {
-            try {
-                productApi = warehouseClient.buyProduct(productApi.getId());
-                productApi.toString();
-            } catch (HttpClientErrorException.Conflict e) {
-                productApi.setState(ProductState.BOUGHT);
-            } catch (HttpClientErrorException.NotFound e) {
-                productApi.setState(ProductState.NOT_FOOUND);
-            }
-        }
-        return transaction;
+    private BuyProductsResponse buyProducts(Transaction transaction) {
+        List<Long> productsId = transaction.getOrder().getProducts().stream().map(products -> products.getId()).collect(Collectors.toList());
+        BuyProductsResponse response = warehouseClient.buyProduct(new BuyProductsRequest(productsId));
+        return response;
     }
 
     private boolean verifyTransaction(Transaction transaction) {

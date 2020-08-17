@@ -1,4 +1,4 @@
-package com.gateway.api.integration;
+package com.gateway.api.integration.Warehouse;
 
 import com.gateway.api.resource.ProductApi;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ public class WarehouseClient {
     public static final String WAREHOUSE_ADRESS = "http://warehouse";
     public static final String ALL_PRODUCTS_ENDPOINT = "/products";
     public static final String SINGLE_PRODUCT_ENDPOINT = "/product/";
-    public static final String BUY_PRODUCT_ENDPOINT = "/buyProduct/";
+    public static final String BUY_PRODUCT_ENDPOINT = "/buyProduct";
 
     @Autowired
     private RestTemplate loadBalancedRestTemplate;
@@ -36,7 +36,8 @@ public class WarehouseClient {
                 , new HttpEntity<>(newProduct), ProductApi.class);
     }
 
-    public ProductApi buyProduct(long id) {
-        return loadBalancedRestTemplate.getForObject(WAREHOUSE_ADRESS + BUY_PRODUCT_ENDPOINT + id, ProductApi.class);
+    public BuyProductsResponse buyProduct(BuyProductsRequest buyProductsRequest) {
+        return loadBalancedRestTemplate.postForObject(WAREHOUSE_ADRESS + BUY_PRODUCT_ENDPOINT
+                , new HttpEntity<>(buyProductsRequest), BuyProductsResponse.class);
     }
 }
