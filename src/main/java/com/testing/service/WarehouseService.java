@@ -26,32 +26,36 @@ public class WarehouseService {
     private final CounterService counterService;
 
     public Transaction finishShopTransaction(Transaction transaction) {
-        Gson gson = new Gson();
-        Transaction copiedTransaction = gson.fromJson(gson.toJson(transaction), Transaction.class);
-        if (buyProducts(transaction)) {
+        transaction = buyProducts(transaction);
+        if (checkIfAllProductsWasBought(transaction)) {
             transaction.setClient(clientService.addClient(transaction.getClient()));
             transaction.getOrder().setClientId(transaction.getClient().getId());
             transaction.getOrder().setId(orderClient.addOrder(transaction.getOrder()));
             transaction.setFinished(true);
-            return verifyTransaction(transaction) == true ? transaction : copiedTransaction;
+            //return verifyTransaction(transaction) == true ? transaction : copiedTransaction;
         }
         return transaction;
     }
 
-    private boolean buyProducts(Transaction transaction) {
-        boolean transactionCorrect = true;
+    private boolean checkIfAllProductsWasBought(Transaction transaction) {
+        return transaction.getOrder().getProducts().stream().allMatch(product -> {
+            product.toString();
+            return product.getState().equals(ProductState.NONE);
+        });
+    }
+
+    private Transaction buyProducts(Transaction transaction) {
         for (ProductApi productApi : transaction.getOrder().getProducts()) {
             try {
                 productApi = warehouseClient.buyProduct(productApi.getId());
+                productApi.toString();
             } catch (HttpClientErrorException.Conflict e) {
                 productApi.setState(ProductState.BOUGHT);
-                transactionCorrect = false;
             } catch (HttpClientErrorException.NotFound e) {
                 productApi.setState(ProductState.NOT_FOOUND);
-                transactionCorrect = false;
             }
         }
-        return transactionCorrect;
+        return transaction;
     }
 
     private boolean verifyTransaction(Transaction transaction) {
