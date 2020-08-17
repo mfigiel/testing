@@ -41,15 +41,13 @@ public class WarehouseService {
 
     private boolean checkIfAllProductsWasBought(Transaction transaction) {
         return transaction.getOrder().getProducts().stream().allMatch(product -> {
-            product.toString();
             return product.getState().equals(ProductState.BOUGHT);
         });
     }
 
     private BuyProductsResponse buyProducts(Transaction transaction) {
         List<Long> productsId = transaction.getOrder().getProducts().stream().map(products -> products.getId()).collect(Collectors.toList());
-        BuyProductsResponse response = warehouseClient.buyProduct(new BuyProductsRequest(productsId));
-        return response;
+        return warehouseClient.buyProduct(new BuyProductsRequest(productsId));
     }
 
     private boolean verifyTransaction(Transaction transaction) {
