@@ -29,7 +29,8 @@ public class WarehouseService {
     private final CounterService counterService;
 
     public Transaction finishShopTransaction(Transaction transaction) {
-        transaction.getOrder().setProducts(buyProducts(transaction).getProducts());
+        BuyProductsResponse buyProductsResponse = buyProducts(transaction);
+        transaction.getOrder().setProducts(buyProductsResponse.getProducts());
         if (checkIfAllProductsWasBought(transaction)) {
             transaction.setClient(clientService.addClient(transaction.getClient()));
             transaction.getOrder().setClientId(transaction.getClient().getId());
@@ -40,9 +41,7 @@ public class WarehouseService {
     }
 
     private boolean checkIfAllProductsWasBought(Transaction transaction) {
-        return transaction.getOrder().getProducts().stream().allMatch(product -> {
-            return product.getState().equals(ProductState.BOUGHT);
-        });
+        return transaction.getOrder().getProducts().stream().allMatch(product -> product.getState().equals(ProductState.BOUGHT));
     }
 
     private BuyProductsResponse buyProducts(Transaction transaction) {

@@ -1,0 +1,108 @@
+package com.gateway.containertests.configuration;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.PropertiesPropertySource;
+import org.testcontainers.containers.DockerComposeContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.shaded.com.google.common.collect.ImmutableList;
+
+import java.io.File;
+import java.time.Duration;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+
+public class DockerEnvironmentConfiguration {
+
+    protected static final int GATEWAY_PORT = 8081;
+    protected static final int WAREHOUSE_PORT = 8089;
+    protected static final int CLIENTS_PORT = 8083;
+    protected static final int ORDERS_PORT = 8082;
+
+    protected static DockerComposeContainer localDockerEnvironment;
+    protected static final String LOCAL_HOST = "localhost";
+
+    protected static final Map<String, Dependency> dependencyInfo = new ConcurrentHashMap<>();
+
+    protected static final int TIMEOUT = 180;
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    public static class Dependency {
+        private String host;
+        private int port;
+    }
+
+    static {
+        if (isLocal() && !useExistingEnv()) {
+            DockerEnvironmentConfiguration.localDockerEnvironment = new DockerComposeContainer(new File("C:/source/testing/docker-compose-test.yml"))
+                    .withExposedService("gateway", GATEWAY_PORT,
+                            Wait.forListeningPort().withStartupTimeout(Duration.ofSeconds(TIMEOUT)))
+                    .withExposedService("warehouse", WAREHOUSE_PORT,
+                            Wait.forListeningPort().withStartupTimeout(Duration.ofSeconds(TIMEOUT)))
+                    .withExposedService("clients", CLIENTS_PORT,
+                            Wait.forListeningPort().withStartupTimeout(Duration.ofSeconds(TIMEOUT)))
+                    .withExposedService("orders", ORDERS_PORT,
+                            Wait.forListeningPort().withStartupTimeout(Duration.ofSeconds(TIMEOUT)));
+
+        }
+
+    }
+
+    protected static void local() {
+        dependencyInfo.put("integrationtest.gateway", localDependency(getMappedPort("gateway_1", GATEWAY_PORT)));
+        dependencyInfo.put("integrationtest.warehouse", localDependency(getMappedPort("warehouse_1", WAREHOUSE_PORT)));
+        dependencyInfo.put("integrationtest.clients", localDependency(getMappedPort("clients_1", CLIENTS_PORT)));
+        dependencyInfo.put("integrationtest.orders", localDependency(getMappedPort("orders_1", ORDERS_PORT)));
+    }
+
+    private static Integer getMappedPort(String serviceName, Integer fromPort) {
+        return useExistingEnv() ? fromPort : localDockerEnvironment.getServicePort(serviceName, fromPort);
+    }
+
+    private static Dependency localDependency(Integer port) {
+        return new Dependency(LOCAL_HOST, port);
+    }
+
+    protected static void remote() {
+        new ImmutableList.Builder<String>()
+                .add("integrationtest.gateway")
+                .add("integrationtest.warehouse")
+                .add("integrationtest.clients")
+                .add("integrationtest.orders")
+                .build().forEach(DockerEnvironmentConfiguration::fillDependencyPropertiesFromRemoteEnvironment);
+    }
+
+    private static void fillDependencyPropertiesFromRemoteEnvironment(String dependency) {
+        String service = System.getProperty(dependency);
+        if (service != null && !service.isEmpty()) {
+            if (service.contains("http://")) {
+                service = service.replace("http://", "");
+            }
+            dependencyInfo.put(dependency, new Dependency(
+                    service.substring(0, service.indexOf(':')),
+                    Integer.parseInt(service.substring(service.indexOf(':') + 1))));
+        }
+    }
+
+    public static boolean isLocal() {
+        return System.getProperty("local") != null
+                || Objects.equals(System.getenv("local"), "true");
+    }
+
+    public static boolean useExistingEnv() {
+        return System.getProperty("useExistingEnv") != null
+                || Objects.equals(System.getenv("useExistingEnv"), "true");
+    }
+
+    public static boolean runWithoutContainers() {
+        return "true".equals(System.getProperty("noContainers", "false"))
+                || Objects.equals(System.getenv("noContainers"), "true");
+    }
+}

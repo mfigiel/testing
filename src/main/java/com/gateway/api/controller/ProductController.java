@@ -27,12 +27,12 @@ public class ProductController {
         warehouseService.addProduct(product);
     }
 
-    @RequestMapping(value = "/product/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/product/{id}")
     public ProductApi getProductInformation(@PathVariable("id") long id) {
         return warehouseService.getProduct(id);
     }
 
-    @RequestMapping(value = "/buyProduct", method = RequestMethod.POST)
+    @PostMapping(value = "/buyProduct")
     public Transaction buyProduct(@Valid @RequestBody Transaction transaction) {
        return warehouseService.finishShopTransaction(transaction);
     }

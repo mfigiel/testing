@@ -14,26 +14,26 @@ import java.util.List;
 @Component
 public class OrderServiceClient {
 
-    public static final String WAREHOUSE_ORDER_ADDRESS = "http://orders";
-    public static final String SINGLE_ORDER_ENDPOINT = "/order/";
-    public static final String ALL_ORDERS_ENDPOINT = "/orders";
-    public static final String ADD_ORDER_ENDPOINT = "/orders";
+    private static final String SINGLE_ORDER_ENDPOINT = "/order/";
+    private static final String ALL_ORDERS_ENDPOINT = "/orders";
+    private static final String ADD_ORDER_ENDPOINT = "/orders";
+    private String orderServiceAddress = "http://orders";
 
     @Autowired
     private RestTemplate loadBalancedRestTemplate;
 
     public OrderApi getOrder(Long id){
-        return loadBalancedRestTemplate.getForObject(WAREHOUSE_ORDER_ADDRESS + SINGLE_ORDER_ENDPOINT + id, OrderApi.class);
+        return loadBalancedRestTemplate.getForObject(orderServiceAddress + SINGLE_ORDER_ENDPOINT + id, OrderApi.class);
     }
 
     public List<OrderApi> getOrders(){
-        return loadBalancedRestTemplate.exchange(WAREHOUSE_ORDER_ADDRESS + ALL_ORDERS_ENDPOINT,
+        return loadBalancedRestTemplate.exchange(orderServiceAddress + ALL_ORDERS_ENDPOINT,
                         HttpMethod.GET, null, new ParameterizedTypeReference<List<OrderApi>>() {
                         }).getBody();
     }
 
     public Long addOrder(OrderApi newOrder){
-        return loadBalancedRestTemplate.postForObject(WAREHOUSE_ORDER_ADDRESS + ADD_ORDER_ENDPOINT
+        return loadBalancedRestTemplate.postForObject(orderServiceAddress + ADD_ORDER_ENDPOINT
                 , new HttpEntity<>(prepareOrderRequest(newOrder)), OrderDto.class).getId();
 
     }
@@ -46,4 +46,7 @@ public class OrderServiceClient {
         return orderDto;
     }
 
+    public void setOrderServiceAddress(String orderServiceAddress) {
+        this.orderServiceAddress = orderServiceAddress;
+    }
 }

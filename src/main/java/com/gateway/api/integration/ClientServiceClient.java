@@ -16,24 +16,29 @@ public class ClientServiceClient {
     private static final String SINGLE_CLIENT_ENDPOINT = "/client/";
     private static final String ALL_CLIENTS_ENDPOINT = "/clients";
     private static final String ADD_CLIENT_ENDPOINT = "/clients";
-    private static final String WAREHOUSE_CLIENT_ADDRESS = "http://clients";
+    private String clientServiceAddress = "http://clients";
 
     @Autowired
     private RestTemplate loadBalancedRestTemplate;
 
     public ClientApi getClient(Long id){
-            return loadBalancedRestTemplate.getForObject(WAREHOUSE_CLIENT_ADDRESS + SINGLE_CLIENT_ENDPOINT + id, ClientApi.class);
+            return loadBalancedRestTemplate.getForObject(clientServiceAddress + SINGLE_CLIENT_ENDPOINT + id, ClientApi.class);
     }
 
     public List<ClientApi> getClients(){
-        return loadBalancedRestTemplate.exchange(WAREHOUSE_CLIENT_ADDRESS + ALL_CLIENTS_ENDPOINT,
+        return loadBalancedRestTemplate.exchange(clientServiceAddress + ALL_CLIENTS_ENDPOINT,
                         HttpMethod.GET, null, new ParameterizedTypeReference<List<ClientApi>>() {
                         }).getBody();
     }
 
     public ClientApi addClient(ClientApi newClient){
-        return loadBalancedRestTemplate.postForObject(WAREHOUSE_CLIENT_ADDRESS + ADD_CLIENT_ENDPOINT
+        return loadBalancedRestTemplate.postForObject(clientServiceAddress + ADD_CLIENT_ENDPOINT
                 , new HttpEntity<>(newClient), ClientApi.class);
+    }
+
+
+    public void setClientServiceAddress(String clientServiceAddress) {
+        this.clientServiceAddress = clientServiceAddress;
     }
 
 }
