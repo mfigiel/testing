@@ -3,18 +3,13 @@ package com.gateway.containertests.configuration;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.PropertiesPropertySource;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
-import org.testcontainers.shaded.com.google.common.collect.ImmutableList;
 
 import java.io.File;
 import java.time.Duration;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DockerEnvironmentConfiguration {
@@ -68,27 +63,6 @@ public class DockerEnvironmentConfiguration {
 
     private static Dependency localDependency(Integer port) {
         return new Dependency(LOCAL_HOST, port);
-    }
-
-    protected static void remote() {
-        new ImmutableList.Builder<String>()
-                .add("integrationtest.gateway")
-                .add("integrationtest.warehouse")
-                .add("integrationtest.clients")
-                .add("integrationtest.orders")
-                .build().forEach(DockerEnvironmentConfiguration::fillDependencyPropertiesFromRemoteEnvironment);
-    }
-
-    private static void fillDependencyPropertiesFromRemoteEnvironment(String dependency) {
-        String service = System.getProperty(dependency);
-        if (service != null && !service.isEmpty()) {
-            if (service.contains("http://")) {
-                service = service.replace("http://", "");
-            }
-            dependencyInfo.put(dependency, new Dependency(
-                    service.substring(0, service.indexOf(':')),
-                    Integer.parseInt(service.substring(service.indexOf(':') + 1))));
-        }
     }
 
     public static boolean isLocal() {
