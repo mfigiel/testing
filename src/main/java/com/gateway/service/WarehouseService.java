@@ -13,9 +13,7 @@ import com.gateway.service.metrics.CounterService;
 import io.micrometer.core.instrument.Tags;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,7 +44,7 @@ public class WarehouseService {
 
     private BuyProductsResponse buyProducts(Transaction transaction) {
         List<Long> productsId = transaction.getOrder().getProducts().stream().map(products -> products.getId()).collect(Collectors.toList());
-        return warehouseClient.buyProduct(new BuyProductsRequest(productsId));
+        return warehouseClient.buyProduct(BuyProductsRequest.builder().productsId(productsId).build());
     }
 
     private boolean verifyTransaction(Transaction transaction) {

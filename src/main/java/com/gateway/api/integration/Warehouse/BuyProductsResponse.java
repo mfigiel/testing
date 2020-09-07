@@ -10,5 +10,5 @@ import java.util.List;
 @Value
 @Builder
 public class BuyProductsResponse {
-    List<ProductApi> products = new ArrayList<>();
+    public List<ProductApi> products = new ArrayList<>();
 }

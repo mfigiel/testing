@@ -1,16 +1,13 @@
 package com.gateway.api.integration.Warehouse;
 
-import lombok.Data;
+import lombok.Builder;
+import lombok.Value;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Value
+@Builder
 public class BuyProductsRequest {
-    private List<Long> productsId;
-
-    public BuyProductsRequest() {}
-
-    public BuyProductsRequest(List<Long> products) {
-        this.productsId = products;
-    }
+    List<Long> productsId;
 }

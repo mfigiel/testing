@@ -19,12 +19,7 @@ public class GatewayContainerTest extends AbstractIntegrationContainerTest {
     @Order(1)
     @Test
     void getProductsFromEmptyDatabase() {
-        webTestClient.get()
-                .uri("/products")
-                .exchange()
-                .expectStatus().is2xxSuccessful()
-                .expectBody()
-                .json("[]");
+        getAllProductsFromEmptyDatabase();
 
         webTestClient.get()
                 .uri("/product/1")
@@ -35,7 +30,7 @@ public class GatewayContainerTest extends AbstractIntegrationContainerTest {
 
         webTestClient.post()
                 .uri("/buyProduct")
-                .syncBody(new BuyProductsRequest(new ArrayList<>(Arrays.asList(1L))))
+                .syncBody(BuyProductsRequest.builder().productsId(new ArrayList<>(Arrays.asList(1L))).build())
                 .exchange()
                 .expectStatus().is4xxClientError()
                 .expectBody()
@@ -44,11 +39,9 @@ public class GatewayContainerTest extends AbstractIntegrationContainerTest {
 
     @Test
     void addProductAndBuy() {
-        ProductApi product = getSampleProduct();
-
         getAllProductsFromEmptyDatabase();
 
-        addProductToWarehouse(product);
+        addProductToWarehouse(getSampleProduct());
 
         getAllProductsFromDatabase();
 
@@ -129,6 +122,7 @@ public class GatewayContainerTest extends AbstractIntegrationContainerTest {
         Transaction transaction = new Transaction();
         OrderApi orderApi = new OrderApi();
         List<ProductApi> productApiList = new ArrayList<>();
+
         productApiList.add(ProductApi.builder().id(1L).build());
         orderApi.setProducts(productApiList);
         transaction.setOrder(orderApi);
@@ -141,13 +135,18 @@ public class GatewayContainerTest extends AbstractIntegrationContainerTest {
         ClientApi clientApi = new ClientApi();
         clientApi.setName("testoweImie");
         clientApi.setSurname("testoweNazwisko");
+        clientApi.setAddress(getSampleAddressApi());
+        return clientApi;
+    }
+
+    @NotNull
+    private AddressApi getSampleAddressApi() {
         AddressApi addressApi = new AddressApi();
         addressApi.setStreet("testowaUlica");
         addressApi.setZipCode("44-100");
         addressApi.setCity("testoweMIasto");
         addressApi.setHouseNumber(5);
-        clientApi.setAddress(addressApi);
-        return clientApi;
+        return addressApi;
     }
 
     private ProductApi getSampleProduct() {
