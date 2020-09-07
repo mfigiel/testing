@@ -2,6 +2,7 @@ package com.gateway.api.controller;
 
 import com.gateway.api.resource.ProductApi;
 import com.gateway.api.resource.Transaction;
+import com.gateway.service.TransactionService;
 import com.gateway.service.WarehouseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import java.util.List;
 public class ProductController {
 
     private final WarehouseService warehouseService;
+    private final TransactionService transactionService;
 
     @GetMapping("/products")
     public List<ProductApi> getProducts() {
@@ -34,7 +36,7 @@ public class ProductController {
 
     @PostMapping(value = "/buyProduct")
     public Transaction buyProduct(@Valid @RequestBody Transaction transaction) {
-       return warehouseService.finishShopTransaction(transaction);
+       return transactionService.finishShopTransaction(transaction);
     }
 
 }
