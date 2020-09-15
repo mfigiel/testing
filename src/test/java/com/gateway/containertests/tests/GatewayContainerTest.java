@@ -24,9 +24,8 @@ public class GatewayContainerTest extends AbstractIntegrationContainerTest {
         webTestClient.get()
                 .uri("/product/1")
                 .exchange()
-                .expectStatus().is2xxSuccessful()
-                .expectBody()
-                .json("");
+                .expectStatus()
+                .is5xxServerError();
 
         webTestClient.post()
                 .uri("/buyProduct")

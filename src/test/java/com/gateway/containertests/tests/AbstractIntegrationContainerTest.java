@@ -14,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import reactor.core.publisher.Hooks;
 
 import javax.annotation.PostConstruct;
 
@@ -53,7 +52,6 @@ public abstract class AbstractIntegrationContainerTest extends DockerEnvironment
         webTestClient = WebTestClient.bindToServer()
                 .baseUrl("http://localhost:" + APPLICATION_PORT)
                 .responseTimeout(Duration.ofSeconds(30)).build();
-        Hooks.onOperatorDebug();
 
         warehouseClient.setWarehouseAddress("http://localhost:" + WAREHOUSE_PORT);
         serviceClient.setClientServiceAddress("http://localhost:" + CLIENTS_PORT);
