@@ -1,17 +1,21 @@
 package com.gateway.api.controller;
 
 import com.gateway.api.resource.ProductApi;
-import lombok.var;
-import org.junit.Ignore;
+import com.gateway.service.WarehouseService;
+import org.mockito.Mockito;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -21,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
+@TestPropertySource(locations = "classpath:application-test.properties")
 public class PersonControllerTest {
 
     @LocalServerPort
@@ -29,46 +34,36 @@ public class PersonControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @MockBean
+    WarehouseService warehouseService;
+
     @Autowired
     private TestRestTemplate testRestTemplate;
 
-   // @MockBean
-    //private PersonController personController;
-///product/{id}
     @Test
     public void productsGet() throws Exception {
+
+        Mockito.when(warehouseService.getProducts()).thenReturn(new ArrayList<>());
+
         mockMvc
                 .perform(get("/products"))
                 .andExpect(status().isOk());
 
         assertThat(this.testRestTemplate.getForObject("http://localhost:" + port + "/products",
-                String.class)).isNullOrEmpty();
+                String.class)).isNotNull();
     }
 
     @Test
     public void productGet() throws Exception {
+
+        Mockito.when(warehouseService.getProduct(1)).thenReturn(new ProductApi());
+
         mockMvc
                 .perform(get("/product", 1)
                 .param("id", "1"))
-                .andExpect(status().isOk());
+                .andExpect(status().is4xxClientError());
 
         assertThat(this.testRestTemplate.getForObject("http://localhost:" + port + "/product/?id=1",
-                String.class)).isNullOrEmpty();
-    }
-
-    @Ignore
-    public void findsTaskById() {
-        // act
-
-        try {
-        var product = testRestTemplate.getForObject("http://localhost:" + port + "/product/1", ProductApi.class);
-
-            // assert
-            assertThat(product)
-                    .extracting(ProductApi::getId, ProductApi::getCategory, ProductApi::getDescription, ProductApi::getName)
-                    .containsExactly(1, "delectus aut autem", false, 1);
-        } catch(Exception e) {
-            assertThat(true);
-        }
+                String.class)).contains("\"status\":404,\"error\":\"Not Found\",\"message\":\"\",\"path\":\"/product/\"");
     }
 }

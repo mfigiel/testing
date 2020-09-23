@@ -4,6 +4,7 @@ import com.gateway.api.integration.Warehouse.BuyProductsRequest;
 import com.gateway.api.resource.*;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.*;
+import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class GatewayContainerTest extends AbstractIntegrationContainerTest {
 
         webTestClient.post()
                 .uri("/buyProduct")
-                .syncBody(BuyProductsRequest.builder().productsId(new ArrayList<>(Arrays.asList(1L))).build())
+                .body(Mono.just(BuyProductsRequest.builder().productsId(new ArrayList<>(Arrays.asList(1L))).build()), BuyProductsRequest.class)
                 .exchange()
                 .expectStatus().is4xxClientError()
                 .expectBody()
@@ -53,7 +54,8 @@ public class GatewayContainerTest extends AbstractIntegrationContainerTest {
         webTestClient.get()
                 .uri("/products")
                 .exchange()
-                .expectStatus().is2xxSuccessful()
+                .expectStatus()
+                .is2xxSuccessful()
                 .expectBody()
                 .json("[{\"id\":1,\"name\":\"name\",\"unitPrice\":10.00,\"description\":\"description\",\"category\":\"category\",\"unitsInStock\":9,\"unitsInOrder\":1,\"state\":\"BOUGHT\"}]");
     }
@@ -61,7 +63,7 @@ public class GatewayContainerTest extends AbstractIntegrationContainerTest {
     private void buyProduct() {
         webTestClient.post()
                 .uri("/buyProduct")
-                .syncBody(createSampleTransaction())
+                .body(Mono.just(createSampleTransaction()), Transaction.class)
                 .exchange()
                 .expectStatus()
                 .isOk()
@@ -100,7 +102,7 @@ public class GatewayContainerTest extends AbstractIntegrationContainerTest {
     private void addProductToWarehouse(ProductApi product) {
         webTestClient.post()
                 .uri("/products")
-                .syncBody(product)
+                .body(Mono.just(product), ProductApi.class)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
