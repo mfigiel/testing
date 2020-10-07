@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class Transaction {
     @OrderValidation
     OrderApi order;
+
     @ClientValidation
     ClientApi client;
     boolean finished;

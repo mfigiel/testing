@@ -8,14 +8,17 @@ spring:
       discovery:
         locator:
           lower-case-service-id: true
-#          enabled: true
-#      routes:
-#      - id: rest_service_route
-#        uri: lb://rest_service
-#        predicates:
-#        - Path=/rest-service/**
-#        filters:
-#        - RewritePath=/rest-service/(?<path>.*), /$\{path}
+    stream:
+      bindings:
+        transactionChannel:
+          destination: sendTransaction
+      default:
+        contentType: application/json
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
 
 eureka:
   client:
