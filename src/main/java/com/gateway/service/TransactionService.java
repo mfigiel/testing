@@ -28,7 +28,7 @@ public class TransactionService {
     }
 
     private void sendTransactionToClientService(Transaction transaction) {
-        transactionSource.sendTransaction().send(MessageBuilder.withPayload(transaction.toString()).build());
+        transactionSource.sendTransaction().send(MessageBuilder.withPayload(transaction).build());
     }
 
     private void setTransactionStatusToFinish(Transaction transaction) {

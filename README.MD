@@ -1,0 +1,28 @@
+# How to run
+first run discovery service, then you can run Gateway
+## Main goal
+It should be used to communicate with other microservices:
+- clients
+- order
+- warehouse
+## Tests
+This project contains two types of tests:
+- unit tests
+- container tests
+Both of them you can find in src/test/java. To run container tests 
+you need to select integration-test profile and run maven test. It's required to
+have all microservices package.
+## Endpoints in ProductController
+### GET /products
+Get all products from warehouse microservice
+### POST /products
+Add product to warehouse microservice
+### GET /product/{id}
+Get product from warehouse microservice with id from path
+### POST /buyProduct
+Endpoint to buy products. 
+First send request to warehouse microservice to take one product if it is on stock.
+Then it add client to client microservice and add his id to order.
+At the end order is sending to order microservice. After that state is updated.
+
+ 
